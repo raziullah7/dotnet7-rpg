@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_rpg_vs.Controllers
@@ -11,23 +10,27 @@ namespace dotnet_rpg_vs.Controllers
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
-        private static List<Character> characters = new List<Character> {
-            new Character(),
-            new Character { Id = 1, Name = "Sam" }
-        };
+        // fields
+        public readonly ICharacterService _characterService;
+
+        // constructor
+        public CharacterController(ICharacterService characterService)
+        {
+            _characterService = characterService;
+        }
 
         // GET methods, read part of CRUD
         [HttpGet("GetAll")]
         public ActionResult<List<Character>> Get() 
         {
-            return Ok(characters);
+            return Ok(_characterService.GetAllCharacters());
         }
 
         // we are sending the id parameter via the url
         [HttpGet("{id}")]
         public ActionResult<Character> GetSingle(int id) 
         {
-            return Ok(characters.FirstOrDefault(c => c.Id == id));
+            return Ok(_characterService.GetCharacterById(id));
         }
 
         // POST methods, create part of CRUD
@@ -35,8 +38,7 @@ namespace dotnet_rpg_vs.Controllers
         [HttpPost]
         public ActionResult<List<Character>> AddCharacter(Character newCharacter)
         {
-            characters.Add(newCharacter);
-            return Ok(characters);
+            return Ok(_characterService.AddCharacter(newCharacter));
         }
     }
 }
