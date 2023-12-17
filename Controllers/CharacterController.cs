@@ -21,24 +21,24 @@ namespace dotnet_rpg_vs.Controllers
 
         // GET methods, read part of CRUD
         [HttpGet("GetAll")]
-        public ActionResult<List<Character>> Get() 
+        public async Task<ActionResult<List<Character>>> Get() 
         {
-            return Ok(_characterService.GetAllCharacters());
+            return Ok(await _characterService.GetAllCharacters());
         }
 
         // we are sending the id parameter via the url
         [HttpGet("{id}")]
-        public ActionResult<Character> GetSingle(int id) 
+        public async Task<ActionResult<Character>> GetSingle(int id) 
         {
-            return Ok(_characterService.GetCharacterById(id));
+            return Ok(await _characterService.GetCharacterById(id));
         }
 
         // POST methods, create part of CRUD
         // we are sending the parameter newCharacter via the body of the Post method
         [HttpPost]
-        public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+        public async Task<ActionResult<List<Character>>> AddCharacter(Character newCharacter)
         {
-            return Ok(_characterService.AddCharacter(newCharacter));
+            return Ok(await _characterService.AddCharacter(newCharacter));
         }
     }
 }
