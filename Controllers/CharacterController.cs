@@ -13,7 +13,7 @@ namespace dotnet_rpg_vs.Controllers
         // fields
         public readonly ICharacterService _characterService;
 
-        // constructor
+        // constructor (Dependency Injection)
         public CharacterController(ICharacterService characterService)
         {
             _characterService = characterService;
@@ -46,6 +46,17 @@ namespace dotnet_rpg_vs.Controllers
         {
             var response = await _characterService.UpdateCharacter(updateCharacter);
             if (response.Data is null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            var response = await _characterService.DeleteCharacter(id);
+            if (response is null)
             {
                 return NotFound(response);
             }

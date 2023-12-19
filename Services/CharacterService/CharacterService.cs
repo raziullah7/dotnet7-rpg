@@ -53,15 +53,13 @@ namespace dotnet_rpg_vs.Services.CharacterService
 
         public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
         {
-                var serviceResponse = new ServiceResponse<GetCharacterDto>();
+            var serviceResponse = new ServiceResponse<GetCharacterDto>();
             try 
             {
                 var character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
 
                 if (character is null)
-                {
                     throw new Exception($"Character with Id '{updatedCharacter.Id}' not found.");
-                }
 
                 character.Name = updatedCharacter.Name;
                 character.HitPoints = updatedCharacter.HitPoints;
@@ -71,6 +69,29 @@ namespace dotnet_rpg_vs.Services.CharacterService
                 character.Class = updatedCharacter.Class;
 
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            try 
+            {
+                // find character with id
+                var character = characters.FirstOrDefault(c => c.Id == id);
+                if (character is null)
+                    throw new Exception($"Character with Id '{id}' not found.");
+                // remove character if found
+                characters.Remove(character);
+                // return list to show that the character was removed
+                serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             }
             catch (Exception ex)
             {
