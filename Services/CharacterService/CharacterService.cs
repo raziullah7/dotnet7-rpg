@@ -14,28 +14,36 @@ namespace dotnet_rpg_vs.Services.CharacterService
 
         // field for dependency injection
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
         // constructor for dependency injection
-        public CharacterService(IMapper mapper)
+        public CharacterService(IMapper mapper, DataContext context)
         {
+            _context = context;
             _mapper = mapper;
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            var dbCharacters = await _context.Characters.ToListAsync();
+            // serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
         
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character = characters.FirstOrDefault(c => c.Id == id);
+            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+            
+            // var character = characters.FirstOrDefault(c => c.Id == id);
             // if (character is not null)
             //     return character;
             // throw new Exception("Character Not Found!");
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            // serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             return serviceResponse;
         }
 

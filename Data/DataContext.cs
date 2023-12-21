@@ -7,13 +7,13 @@ namespace dotnet_rpg_vs.Data
 {
     public class DataContext : DbContext
     {
-        // DbSet type field represents a Table in the Database
-        public DbSet<Character> Characters => Set<Character>();
-
         // constructor
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
             
         }
+        
+        // DbSet type field represents a Table in the Database
+        public DbSet<Character> Characters => Set<Character>();
     }
 }
